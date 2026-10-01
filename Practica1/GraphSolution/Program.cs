@@ -9,27 +9,47 @@ namespace GraphSolution
 {
     internal class Program
     {
+        public class Sink
+        {
+            public List<string> Inheritance { get; set; } = new List<string>();
+            public List<string> Aggregate { get; set; } = new List<string>();
+        }
+
         static void Main(string[] args)
         {
-            var graph = new Dictionary<string, List<string>>();
-            string[] separator = { "--|>", "0->" };
+            var graph = new Dictionary<string, Sink>();
 
             foreach (var line in File.ReadAllLines("C:\\Users\\Win10\\Desktop\\InfSystem\\Practica1\\GraphSolution\\Graph.txt"))
             {
-                string[] parts = line.Split(separator, StringSplitOptions.None);
+                string from, to;
+                bool isInheritance;
 
-                string from = parts[0].Trim();
-                string to = parts[1].Trim();
+                if (line.Contains("--|>"))
+                {
+                    var parts = line.Split(new[] { "--|>" }, StringSplitOptions.None);
+                    from = parts[0].Trim();
+                    to = parts[1].Trim();
+                    isInheritance = true;
+                }
+                else
+                {
+                    var parts = line.Split(new[] { "0->" }, StringSplitOptions.None);
+                    from = parts[0].Trim();
+                    to = parts[1].Trim();
+                    isInheritance = false;
+                }
 
-                if (!graph.ContainsKey(from))
-                    graph[from] = new List<string>();
-                if (!graph.ContainsKey(to))
-                    graph[to] = new List<string>();
+                if (!graph.ContainsKey(from)) graph[from] = new Sink();
+                if (!graph.ContainsKey(to)) graph[to] = new Sink();
 
-                graph[from].Add(to);
+                if (isInheritance)
+                    graph[from].Inheritance.Add(to);
+                else
+                    graph[from].Aggregate.Add(to);
             }
+
             foreach (var kv in graph)
-                Console.WriteLine($"{kv.Key}, [{string.Join(", ", kv.Value)}]");
+                Console.WriteLine($"{kv.Key}: [{string.Join(", ", kv.Value.Inheritance)}] [{string.Join(", ", kv.Value.Aggregate)}]");
         }
     }
 }
