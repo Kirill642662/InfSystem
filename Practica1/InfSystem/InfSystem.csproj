@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="file.txt" />
+    <Content Include="graph.txt" />
     <Content Include="ReadFromFile.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

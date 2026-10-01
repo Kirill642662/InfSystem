@@ -62,6 +62,29 @@ namespace InfSystem
             return res;
 
         }
+
+        public static void PrintGraph()
+        {
+            var graph = new Dictionary<string, List<string>>();
+            string[] separator = { "--|>", "0->" };
+
+            foreach (var line in File.ReadAllLines("C:\\Users\\Win10\\Desktop\\InfSystem\\Practica1\\InfSystem\\graph.txt"))
+            {
+                string[] parts = line.Split(separator, StringSplitOptions.None);
+
+                string from = parts[0].Trim();
+                string to = parts[1].Trim();
+
+                if (!graph.ContainsKey(from))
+                    graph[from] = new List<string>();
+                if (!graph.ContainsKey(to))
+                    graph[to] = new List<string>();
+
+                graph[from].Add(to);
+            }
+            foreach (var kv in graph)
+                Console.WriteLine($"{kv.Key}, [{string.Join(", ", kv.Value)}]");
+        }
         static void Main(string[] args)
         {
             List<Weather> list = new List<Weather>();
@@ -72,6 +95,7 @@ namespace InfSystem
                 Console.WriteLine("1. Ввести данные о погоде");
                 Console.WriteLine("2. Вывести данные о погоде, которые сохранили");
                 Console.WriteLine("3. Загрузить данные о погоде с файла");
+                Console.WriteLine("4. Показать ГРАФ");
                 Console.WriteLine("0. Выйти с программы!");
                 string input = Console.ReadLine();
                 switch (input)
@@ -92,6 +116,9 @@ namespace InfSystem
                         break;
                     case "3":
                         MyReadFromFile();
+                        break;
+                    case "4":
+                        PrintGraph();
                         break;
                     case "0":
                         return;
