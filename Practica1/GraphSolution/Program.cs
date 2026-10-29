@@ -39,7 +39,8 @@ namespace GraphSolution
                     isInheritance = false;
                 }
 
-                if (!graph.ContainsKey(from)) graph[from] = new Sink();
+                if (!graph.ContainsKey(from)) 
+                    graph[from] = new Sink();
                 if (!graph.ContainsKey(to)) graph[to] = new Sink();
 
                 if (isInheritance)

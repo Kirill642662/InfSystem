@@ -1,48 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+
 
 namespace InfSystem
 {
-    internal class Weather
+    public class Weather
     {
         public DateTime Date { get; set; }
         public string Place { get; set; }
         public decimal TemperatureValue { get; set; }
         public string Type {  get; set; }
+
+
         public virtual void FromStr(string text)
         {
+            if (string.IsNullOrEmpty(text))
+                throw new NonCorrectFormatException("Пустая строка");
+
             string[] entry = text.Trim().Split(' ');
+            if (entry.Length < 4)
+                throw new NonCorrectFormatException("Нужно минимум 4 параметра");
+
             Type = entry[0];
-            Date = DateTime.Parse(entry[1]);
+            Date = ParseDate(entry[1]);
             Place = entry[2];
-            TemperatureValue = decimal.Parse(entry[3]);
-        }
-        public virtual void InFile()
-        {
-            string[] lines = {
-                "Weather",
-                Date.ToString("yyyy-MM-dd"),
-                Place,
-                TemperatureValue.ToString()
-            };
-            File.WriteAllLines("C:\\Users\\Win10\\Desktop\\InfSystem\\Practica1\\InfSystem\\file.txt", lines);
+            TemperatureValue = ParseNumber(entry[3], "температура");
         }
 
-        public virtual void FromFile(string[] lines, int startIndex = 0)
+        public static DateTime ParseDate(string date)
         {
-            Date = DateTime.Parse(lines[startIndex]);
-            Place = lines[startIndex + 1];
-            TemperatureValue = decimal.Parse(lines[startIndex + 2]);
+            if(DateTime.TryParse(date, out var result))
+                return result;
+            throw new NonCorrectFormatException("Неверная дата");
+        }
+        public static decimal ParseNumber(string num, string type)
+        {
+            if(decimal.TryParse(num, out var result)) return result;
+            throw new NonCorrectFormatException($"Неверное число {type}");
         }
 
-        public virtual string ToString()
+        public override string ToString()
         {
-            return $"{Type}, {Date.ToString("yyyy:MM:dd")}, {Place}, {TemperatureValue}";
+            return $"{Type}, {Date:yyyy:MM:dd}, {Place}, {TemperatureValue}";
         }
     }
 }
